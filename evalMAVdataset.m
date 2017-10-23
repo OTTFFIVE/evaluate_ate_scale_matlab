@@ -7,6 +7,7 @@ for si=1:size(MAVdatasets,2)
     
     numSteps = ceil((MAVdatasets{si}.endTime-MAVdatasets{si}.startTime)/intervalStep)+5;
     allSegError = zeros(size(options,2), numSteps);
+    allSegErrorCumulative = zeros(size(options,2), numSteps);
     allSegStartTimes = zeros(size(options,2), numSteps);
     allSegRMSE = zeros(size(options,2), 1);
     allSegTimespan = zeros(size(options,2), 3);
@@ -27,9 +28,10 @@ for oi=1:size(options,2)
         %end
         
 
-        [ segmentError, segmentStart, absRMSE, timeSpan ] = efficientEvalMAVDriftRun( MAVdatasets{si}.mocapRaw , runlog,intervalDuration,intervalStep,1 );
+        [ segmentError, segmentErrorCumulative, segmentStart, absRMSE, timeSpan ] = efficientEvalMAVDriftRun( MAVdatasets{si}.mocapRaw , runlog,intervalDuration,intervalStep,1 );
 
         allSegError(oi,1:size(segmentError,2)) = segmentError;
+        allSegErrorCumulative(oi,1:size(segmentErrorCumulative,2)) = segmentErrorCumulative;
         allSegStartTimes(oi,1:size(segmentStart,2)) = segmentStart;
         allSegRMSE(oi) = absRMSE;
         allSegTimespan(oi,:) = timeSpan;
@@ -49,6 +51,7 @@ for oi=1:size(options,2)
 end
 
     MAVdatasets{si}.allSegError = allSegError;
+    MAVdatasets{si}.allSegErrorCumulative = allSegErrorCumulative;
     MAVdatasets{si}.allSegStartTimes = allSegStartTimes;
     MAVdatasets{si}.allSegRMSE = allSegRMSE;
     MAVdatasets{si}.allSegTimespan = allSegTimespan;
