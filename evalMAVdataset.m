@@ -1,4 +1,8 @@
-function [ MAVdatasets ] = evalMAVdataset( logPath, options, MAVdatasets )
+function [ MAVdatasets ] = evalMAVdataset( logPath, options, MAVdatasets, fixScale )
+
+if nargin < 4
+    fixScale = false;
+end
 
 intervalDuration=10;
 intervalStep = 5;
@@ -28,7 +32,7 @@ for oi=1:size(options,2)
         %end
         
 
-        [ segmentError, segmentErrorCumulative, segmentStart, absRMSE, timeSpan ] = efficientEvalMAVDriftRun( MAVdatasets{si}.mocapRaw , runlog,intervalDuration,intervalStep,1 );
+        [ segmentError, segmentErrorCumulative, segmentStart, absRMSE, timeSpan ] = efficientEvalMAVDriftRun( MAVdatasets{si}.mocapRaw , runlog,intervalDuration,intervalStep,1, fixScale );
 
         allSegError(oi,1:size(segmentError,2)) = segmentError;
         allSegErrorCumulative(oi,1:size(segmentErrorCumulative,2)) = segmentErrorCumulative;

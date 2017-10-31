@@ -1,5 +1,8 @@
-function [ rmse, R, t, scale ] = AlignSimEfficient( gtPos, estimatedPos )
+function [ rmse, R, t, scale ] = AlignSimEfficient( gtPos, estimatedPos, fixScale )
 
+if nargin < 3
+	fixScale = false;
+end
 
 centroid_A = mean(estimatedPos,1);
 centroid_B = mean(gtPos,1);
@@ -25,7 +28,12 @@ for i=1:size(A,1)
     sab = sab + A(i,:)*B(i,:)';
 end
 
-scale = sab/saa;
+if (fixScale)
+	scale = 1;
+else
+	scale = sab/saa;
+end
+	
 t = scale*mR_cA + centroid_B';
 rmse =  (sum(sum((scale*A-B).^2))/size(A,1)).^0.5;
 

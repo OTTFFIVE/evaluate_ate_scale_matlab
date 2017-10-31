@@ -1,5 +1,9 @@
-function [ segmentError, segmentErrorCumulative, segmentStartTime, absRMSE, timespan ] = efficientEvalMAVDriftRun( mocapRaw, runlog, segmentDuration, stepDuration, dosteps )
-  
+function [ segmentError, segmentErrorCumulative, segmentStartTime, absRMSE, timespan ] = efficientEvalMAVDriftRun( mocapRaw, runlog, segmentDuration, stepDuration, dosteps, fixScale )
+    
+    if nargin < 6
+        fixScale = false;
+    end
+
     lsdOpt = importdata([runlog]);
     segmentError=inf;
     segmentErrorCumulative=inf;
@@ -87,7 +91,7 @@ function [ segmentError, segmentErrorCumulative, segmentStartTime, absRMSE, time
                 segmentErrorCumulative(idx) = nan;
             else 
                  % EVAL segment
-                absRMSE = AlignSimEfficient( gtPos(startframe:endFrame,:), lsdPos(startframe:endFrame,:) );
+                absRMSE = AlignSimEfficient( gtPos(startframe:endFrame,:), lsdPos(startframe:endFrame,:), fixScale );
 
                 segmentError(idx) = absRMSE;
                 segmentStartTime(idx) = startTime;
